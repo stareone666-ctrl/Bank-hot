@@ -1,9 +1,3 @@
+# 内部使用阶段：不让搜索引擎收录。对外推广时换回框架原来的规则（允许 /api/v1/、/api/mcp，屏蔽 /api/、/admin/ 等，并写上 Sitemap）。
 User-agent: *
-Allow: /api/v1/
-Allow: /api/mcp
-Disallow: /api/
-Disallow: /admin/
-Disallow: /starred
-Disallow: /feedback
-
-Sitemap: {{siteUrl}}/sitemap.xml
+Disallow: /

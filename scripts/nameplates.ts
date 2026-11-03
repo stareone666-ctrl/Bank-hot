@@ -9,7 +9,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import opentype from "opentype.js";
-import { SITE } from "@aihot/site";
+import { REPORTS } from "@aihot/site";
 
 const pkg = process.argv[2];
 if (!pkg) throw new Error("usage: node scripts/nameplates.ts <noto-sans-sc package dir>");
@@ -27,7 +27,7 @@ function gap(a: string, b: string): number {
   return H * 0.085;
 }
 
-const S = SITE.subject;
+const S = REPORTS.nameplate;
 const NAMEPLATES: Record<string, Array<{ text: string; accent: boolean }>> = {
   daily: [
     { text: S, accent: true },

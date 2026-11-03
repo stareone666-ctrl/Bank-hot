@@ -12,144 +12,111 @@
  * feedLabel 是分类 RSS 标题里的名字（不写就用 label）。公开接口、RSS 和 MCP 里要把一类并进另一类发布，写在站点设置里（site/site.ts 的 PUBLIC_CATEGORIES）。
  */
 export const CATEGORIES = [
-  { key: "ai-models", tagColor: "indigo", label: "模型", feedLabel: "AI 模型", section: "模型发布/更新", guide: "模型本身的发布、版本、权重开放、能力或价格变化，以及既有榜单上的模型成绩。公布一次跑分不是发布新基准，也不是教程。" },
-  { key: "ai-products", tagColor: "turquoise", label: "产品", feedLabel: "AI 产品", section: "产品发布/更新", guide: "可使用的 AI 产品、功能、应用、工具、API、平台和工程组件的发布更新。模型厂商发布的推理框架、算子库、硬件适配组件仍是产品，不能因为厂商名归成模型。" },
-  { key: "industry", tagColor: "orange", label: "行业", feedLabel: "行业动态", section: "行业动态", guide: "已发生的公司经营、融资并购、人事、合作、诉讼、政策、真实安全事故及调查进展。新闻由当事人发帖、带有态度，也不因此变成观点。" },
-  { key: "paper", tagColor: "violet", label: "论文", feedLabel: "论文", section: "论文研究", guide: "以新研究方法、实验设计与发现为核心的论文、技术报告、新基准或研究数据集。系统性红队实验属于研究；既有榜单成绩归模型，真实事故的新闻调查归行业。" },
-  { key: "tip", tagColor: "green", label: "教程", section: "技巧与观点", guide: "读者可以照着使用的方法、提示词、工具用法、工程实践复盘与技术讲解。重点是可复用的做法；单纯发布工具归产品，只有态度和预测而无做法归观点。", commentary: true },
-  { key: "opinion", tagColor: "purple", label: "观点", section: "技巧与观点", guide: "重点是作者的解释、判断、主张、预测、评论或访谈观点。讨论市场不自动归行业，作者是名人不自动归观点。", commentary: true },
+  { key: "tender", tagColor: "orange", label: "标讯", feedLabel: "培训类标讯", section: "招标与采购", guide: "金融机构发出的、与培训相关的招标、采购、比选、询价、竞争性谈判或磋商、采购意向、资格预审公告，以及这些项目的更正、延期、澄清和终止公告。采购对象是培训服务、课程开发、讲师、学习平台、培训场地、拓展、人才测评或咨询辅导。已经公布结果的归中标。" },
+  { key: "award", tagColor: "red", label: "中标", feedLabel: "中标与成交", section: "中标与成交", guide: "培训相关项目的中标候选人公示、中标或成交结果、合同公示、废标与流标公告。重点是谁中了、多少钱、哪个项目。还在征集供应商的归标讯。" },
+  { key: "training", tagColor: "turquoise", label: "培训", feedLabel: "培训动态", section: "培训动态", guide: "金融机构已开展、正在开展或正式启动的培训班、人才培养项目、技能竞赛、内训师队伍建设、学院或培训中心建设，以及培训成果报道。发出采购公告的归标讯；只是表态重视人才、没有具体项目的归机构。" },
+  { key: "policy", tagColor: "indigo", label: "政策", feedLabel: "监管与政策", section: "监管与政策", guide: "监管机构、行业协会或总行（总公司）发布的、对从业人员培训、资格考试、继续教育、合规教育、消费者权益保护教育等提出要求的文件和通知，以及对培训需求有直接影响的监管新规。" },
+  { key: "industry", tagColor: "green", label: "机构", feedLabel: "机构动态", section: "机构动态", guide: "机构本身的人事任免、改革重组、合并、战略规划、组织架构调整和经营业绩。它们决定接下来谁有培训需求、需求是什么，但本身不是培训项目或采购。", commentary: true },
 ] as const satisfies ReadonlyArray<{ key: string; tagColor: string; label: string; feedLabel?: string; section: string; guide: string; commentary?: true }>;
 
 /**
- * 这个行业最受关注的一类发布（AI 行业是新模型）：日报报头的“N 个新模型”、改分类后修订已出的报告都按它数。
+ * 这个行业最受关注的一类发布：日报报头的“N 条新标讯”、改分类后修订已出的报告都按它数。
  * category 是类别，tag 是标签，两者都对上才算；unit 接在数字后面。
- * 没有这样一类的行业设成 null，报头就不显示这个数。
  */
-export const RELEASE: { category: string; tag: string; unit: string } | null = { category: "ai-models", tag: "模型发布", unit: "个新模型" };
+export const RELEASE: { category: string; tag: string; unit: string } | null = { category: "tender", tag: "招标采购", unit: "条新标讯" };
 
 /** 周报月报的总述可以直接写、不必在报道里找到出处的行业通用词（小写）。站名会自动算进去。 */
-export const PLAIN_TERMS: readonly string[] = ["ai", "api", "llm", "gpu", "agi", "ceo", "ipo"];
+export const PLAIN_TERMS: readonly string[] = ["银行", "农商行", "培训", "标讯", "采购", "招标", "中标", "供应商"];
 
 /**
  * 内容理解一步给每篇资料判的“内容类型”（写在 prompts/content-understanding.md 里，改了类型要同步改那份提示词）。
  * 评分提示词（prompts/selection-score.md）按类型给五个维度不同的权重。
  */
-export const ITEM_TYPES = ["model_release", "product_launch", "tool_or_prompt", "research_paper", "industry_event", "opinion_analysis", "tutorial_explainer"] as const;
+export const ITEM_TYPES = ["tender_notice", "award_result", "training_activity", "policy_regulation", "institution_news", "analysis_insight"] as const;
 
 // ── 标签词表 ────────────────────────────────────────────────────────────────────────────
 
 /** 每篇资料的第一个标签必须是这些“分类标签”之一。 */
 export const CATEGORY_TAGS = [
-  "产品更新", "模型发布", "论文/研究", "开源/仓库", "教程/实践", "现象/趋势", "大佬观点", "评测/基准", "安全/对齐", "行业动态", "政策/监管",
-  "非AI/通用工具", "其他",
+  "招标采购", "采购意向", "更正/终止", "中标结果", "培训动态", "人才培养", "监管政策", "机构动态", "行业观察", "其他",
 ] as const;
 
-/** 可选的主题标签。 */
+/** 可选的主题标签：培训方向。 */
 export const TOPIC_TAGS = [
-  "Agent", "编码", "推理", "多模态", "语音", "视频", "图像生成", "RAG", "端侧", "数据/训练", "搜索", "部署/工程", "开源生态", "具身智能", "MCP/工具调用",
+  "领导力/干部培训", "新员工培训", "客户经理/营销", "网点/柜面服务", "风险合规", "数字化转型", "金融科技", "普惠/乡村振兴",
+  "财富管理", "保险销售", "内训师", "线上学习平台", "党建培训", "资格考试/认证", "拓展/团建", "人才测评",
 ] as const;
 
-/** 可选的实体标签（公司、机构、平台）。 */
-export const ENTITY_TAGS = ["OpenAI", "Anthropic", "DeepSeek", "DeepMind", "Google", "Meta", "Microsoft", "xAI", "Hugging Face", "GitHub", "arXiv"] as const;
+/** 可选的实体标签（机构）。 */
+export const ENTITY_TAGS = ["中原银行", "河南农商银行", "邮储银行", "中国邮政", "中邮保险", "金融监管总局", "人民银行"] as const;
 
 /** 模型常写的近义词，统一成词表里的写法。 */
 export const TAG_SYNONYMS: Readonly<Record<string, string>> = {
-  "教程/玩法": "教程/实践", "技巧/最佳实践": "教程/实践", "合作/生态": "行业动态", "融资/收购": "行业动态", "公司动态": "行业动态",
-  合作: "行业动态", 生态: "行业动态", 融资: "行业动态", 收购: "行业动态", 投资: "行业动态", 并购: "行业动态",
-  政策: "政策/监管", 监管: "政策/监管", 法规: "政策/监管", 安全: "安全/对齐", 对齐: "安全/对齐",
-  论文: "论文/研究", 研究: "论文/研究", paper: "论文/研究", papers: "论文/研究",
-  "open-source": "开源/仓库", 开源: "开源/仓库", 仓库: "开源/仓库", repo: "开源/仓库",
-  教程: "教程/实践", 玩法: "教程/实践", 指南: "教程/实践", 技巧: "教程/实践", 最佳实践: "教程/实践", 实践: "教程/实践",
-  产品: "产品更新", 更新: "产品更新", 发布: "模型发布", 模型: "模型发布", 趋势: "现象/趋势", 现象: "现象/趋势", 观点: "大佬观点",
-  视频生成: "视频", 非ai: "非AI/通用工具", "non-ai": "非AI/通用工具", 通用工具: "非AI/通用工具", 工程工具: "非AI/通用工具",
-  安全扫描: "非AI/通用工具", devops: "非AI/通用工具", 行业: "行业动态", 动态: "行业动态",
+  招标: "招标采购", 采购: "招标采购", 比选: "招标采购", 询价: "招标采购", 竞争性谈判: "招标采购", 竞争性磋商: "招标采购", 招标公告: "招标采购", 采购公告: "招标采购", 标讯: "招标采购",
+  意向: "采购意向", 采购计划: "采购意向",
+  更正: "更正/终止", 延期: "更正/终止", 澄清: "更正/终止", 终止: "更正/终止", 废标: "中标结果", 流标: "中标结果",
+  中标: "中标结果", 成交: "中标结果", 结果公示: "中标结果", 中标候选人: "中标结果", 中标公告: "中标结果", 成交公告: "中标结果",
+  培训: "培训动态", 培训班: "培训动态", 开班: "培训动态", 竞赛: "培训动态", 技能竞赛: "培训动态",
+  人才: "人才培养", 人才队伍: "人才培养", 人才工程: "人才培养",
+  监管: "监管政策", 政策: "监管政策", 通知: "监管政策", 法规: "监管政策",
+  人事: "机构动态", 任免: "机构动态", 改革: "机构动态", 重组: "机构动态", 合并: "机构动态", 战略: "机构动态", 业绩: "机构动态",
+  观点: "行业观察", 分析: "行业观察", 趋势: "行业观察",
+  领导力: "领导力/干部培训", 干部培训: "领导力/干部培训", 中层: "领导力/干部培训", 管理培训: "领导力/干部培训",
+  新员工: "新员工培训", 新入行员工: "新员工培训", 校招: "新员工培训",
+  营销: "客户经理/营销", 客户经理: "客户经理/营销", 柜面: "网点/柜面服务", 网点: "网点/柜面服务", 服务礼仪: "网点/柜面服务",
+  合规: "风险合规", 风控: "风险合规", 反洗钱: "风险合规", 案防: "风险合规",
+  数字化: "数字化转型", 金融科技: "金融科技", 科技: "金融科技", 普惠: "普惠/乡村振兴", 乡村振兴: "普惠/乡村振兴",
+  理财: "财富管理", 财富: "财富管理", 保险: "保险销售", 代理人: "保险销售",
+  内训: "内训师", 讲师: "内训师", 学习平台: "线上学习平台", 线上学习: "线上学习平台", 网络学院: "线上学习平台",
+  党建: "党建培训", 考试: "资格考试/认证", 认证: "资格考试/认证", 拓展: "拓展/团建", 团建: "拓展/团建", 测评: "人才测评",
+  邮储: "邮储银行", 中国邮政储蓄银行: "邮储银行", 邮政: "中国邮政", 中邮人寿: "中邮保险", 河南农商联合银行: "河南农商银行", 农商银行: "河南农商银行",
+  国家金融监督管理总局: "金融监管总局", 金融监管局: "金融监管总局", 中国人民银行: "人民银行",
 };
 
-// ── 公司与主体 ──────────────────────────────────────────────────────────────────────────
+// ── 机构与主体 ──────────────────────────────────────────────────────────────────────────
 
 /**
- * 公司主题：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。
- * aliases 给结构抽取模型看；orgNames 是这家公司发消息时开头用的组织名（公司、实验室、团队），
- * 在它自己的主题页上读者知道说的是谁，可以省去；otherNames 是公司的其他称呼（官方账号名、子品牌）。
- * 所有这些名字都用来认出说的是哪家公司，比如把事实的主体对到发布方。
+ * 机构主题：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。
+ * aliases 给结构抽取模型看；orgNames 是这家机构发消息时开头用的组织名，在它自己的主题页上可以省去；
+ * otherNames 是其他称呼（分支机构名、品牌）。所有这些名字都用来认出说的是哪家机构。
  */
 export const ENTITIES: Record<string, { name: string; displayTag: string | null; aliases: string[]; orgNames?: string[]; otherNames?: string[] }> = {
-  "world-labs": { name: "World Labs", displayTag: null, aliases: ["World Labs"] },
-  "thinking-machines": { name: "Thinking Machines Lab", displayTag: null, aliases: ["Thinking Machines"] },
-  amd: { name: "AMD", displayTag: null, aliases: ["AMD", "Advanced Micro Devices"] },
-  openai: { name: "OpenAI", displayTag: "OpenAI", aliases: ["OpenAI", "ChatGPT", "Sora", "Codex", "GPT"], orgNames: ["OpenAI"], otherNames: ["OpenAI Developers"] },
-  anthropic: { name: "Anthropic", displayTag: "Anthropic", aliases: ["Anthropic", "Claude"], orgNames: ["Anthropic"], otherNames: ["Claude Code"] },
-  google: { name: "Google", displayTag: "Google", aliases: ["Google", "DeepMind", "Gemini", "谷歌"], orgNames: ["Google DeepMind", "Google Research", "Google", "DeepMind", "谷歌"], otherNames: ["Google AI", "Google Labs", "Google Cloud"] },
-  deepseek: { name: "DeepSeek", displayTag: "DeepSeek", aliases: ["DeepSeek", "深度求索"], orgNames: ["DeepSeek", "深度求索"] },
-  qwen: { name: "千问 Qwen", displayTag: null, aliases: ["Qwen", "通义", "阿里"], orgNames: ["通义千问", "通义实验室", "阿里巴巴", "阿里云", "阿里", "Qwen Team", "Qwen", "Alibaba"], otherNames: ["千问", "千问APP", "Alibaba Cloud"] },
-  kimi: { name: "月之暗面 / Kimi", displayTag: null, aliases: ["Kimi", "月之暗面", "Moonshot", "Kimi / 月之暗面"], orgNames: ["Moonshot AI", "月之暗面", "Kimi"] },
-  minimax: { name: "MiniMax", displayTag: null, aliases: ["MiniMax", "海螺"], orgNames: ["MiniMax", "稀宇科技"] },
-  zhipu: { name: "智谱 GLM", displayTag: null, aliases: ["智谱", "GLM", "Z.ai"], orgNames: ["智谱AI", "智谱", "Zhipu AI", "Z.ai"], otherNames: ["Zhipu"] },
-  xai: { name: "xAI", displayTag: "xAI", aliases: ["xAI", "Grok"], orgNames: ["SpaceX Super Intelligence", "SpaceXAI", "SpaceXSI", "xAI"], otherNames: ["Grok Bot"] },
-  meta: { name: "Meta", displayTag: "Meta", aliases: ["Meta", "Llama"], orgNames: ["Meta Superintelligence Labs", "Meta AI", "Meta"], otherNames: ["AI at Meta", "Muse"] },
-  microsoft: { name: "Microsoft", displayTag: "Microsoft", aliases: ["Microsoft", "微软", "Copilot"], orgNames: ["Microsoft Research", "Microsoft AI", "Microsoft", "微软"] },
-  nvidia: { name: "NVIDIA", displayTag: null, aliases: ["NVIDIA", "英伟达"], orgNames: ["NVIDIA", "英伟达"] },
-  "hugging-face": { name: "Hugging Face", displayTag: "Hugging Face", aliases: ["Hugging Face"], orgNames: ["Hugging Face", "HuggingFace"] },
-  cursor: { name: "Cursor", displayTag: null, aliases: ["Cursor", "Anysphere"], orgNames: ["Cursor"] },
-  openrouter: { name: "OpenRouter", displayTag: null, aliases: ["OpenRouter"], orgNames: ["OpenRouter"] },
+  zybank: { name: "中原银行", displayTag: "中原银行", aliases: ["中原银行", "Zhongyuan Bank"], orgNames: ["中原银行股份有限公司", "中原银行"], otherNames: ["中原银行郑州分行", "中原银行洛阳分行"] },
+  "henan-rcb": {
+    name: "河南农商银行", displayTag: "河南农商银行",
+    aliases: ["河南农商银行", "河南农商联合银行", "河南农信", "河南省农村信用社联合社", "农商银行", "农商行"],
+    orgNames: ["河南农村商业银行股份有限公司", "河南农商联合银行股份有限公司", "河南农商银行", "河南农商联合银行", "河南省农村信用社联合社"],
+    otherNames: ["郑州农商银行", "洛阳农商银行", "新乡农商银行", "南阳农商银行", "商丘农商银行", "信阳农商银行", "周口农商银行", "驻马店农商银行"],
+  },
+  psbc: { name: "邮储银行", displayTag: "邮储银行", aliases: ["邮储银行", "中国邮政储蓄银行", "邮储", "PSBC"], orgNames: ["中国邮政储蓄银行股份有限公司", "中国邮政储蓄银行", "邮储银行"], otherNames: ["邮储银行河南省分行", "中国邮政储蓄银行河南省分行"] },
+  chinapost: { name: "中国邮政", displayTag: "中国邮政", aliases: ["中国邮政", "中国邮政集团", "河南邮政"], orgNames: ["中国邮政集团有限公司", "中国邮政集团有限公司河南省分公司", "中国邮政"], otherNames: ["河南邮政", "河南省邮政分公司"] },
+  "chinapost-life": { name: "中邮保险", displayTag: "中邮保险", aliases: ["中邮保险", "中邮人寿", "中邮人寿保险"], orgNames: ["中邮人寿保险股份有限公司", "中邮人寿保险股份有限公司河南分公司", "中邮保险"], otherNames: ["中邮人寿河南分公司"] },
+  nfra: { name: "金融监管总局", displayTag: "金融监管总局", aliases: ["国家金融监督管理总局", "金融监管总局", "河南金融监管局"], orgNames: ["国家金融监督管理总局", "国家金融监督管理总局河南监管局"] },
 };
 
 /**
- * 身份词典：摘要和标题里出现的公司，必须在原文里也出现过，否则退回原标题、丢掉摘要（防止模型张冠李戴）。
- * 行业没有这个问题时可以留空数组。
+ * 身份词典：摘要和标题里出现的机构，必须在原文里也出现过，否则退回原标题、丢掉摘要（防止模型把一家的标讯写成另一家的）。
  */
 export const IDENTITY_LEXICON: ReadonlyArray<{ id: string; name: string; patterns: RegExp[] }> = [
-  { id: "openai", name: "OpenAI", patterns: [/openai|chatgpt|\bgpt-?[o\d]|\bsora\b|\bcodex\b/i] },
-  { id: "anthropic", name: "Anthropic", patterns: [/anthropic|\bclaude\b/i, /\b(?:opus|sonnet|haiku)\s*\d+(?:[.\-]\d+)*\b/i, /\bfable\s*\d+(?:[.\-]\d+)*\b|\bmythos\b/i] },
-  { id: "google", name: "Google / Gemini", patterns: [/google|deepmind|\bgemini\b|notebooklm|\bveo\s?\d|\bAlphaFold\b|\bAMIE\b/i] },
-  { id: "deepseek", name: "DeepSeek", patterns: [/deepseek|深度求索/i] },
-  { id: "xai", name: "xAI / Grok", patterns: [/\bxai\b|\bgrok\b/i] },
-  { id: "meta", name: "Meta / Llama", patterns: [/\bMeta\b/, /\bmeta\s?ai\b|\bllama\b/i] },
-  { id: "microsoft", name: "Microsoft / Copilot", patterns: [/microsoft|copilot|微软/i] },
-  { id: "nvidia", name: "NVIDIA", patterns: [/nvidia|英伟达|\bnemotron\b|\bnemo\b|\bblackwell\b|\brubin(?:\s+ultra)?\b|\bcuda\b/i] },
-  { id: "qwen", name: "千问 Qwen", patterns: [/\bqwen|通义|千问/i] },
-  { id: "hugging-face", name: "Hugging Face", patterns: [/hugging\s?face/i] },
-  { id: "cursor", name: "Cursor", patterns: [/\bCursor\b/] },
-  { id: "kimi", name: "月之暗面 / Kimi", patterns: [/\bkimi\b|月之暗面|\bmoonshot\s?ai\b/i] },
-  { id: "openrouter", name: "OpenRouter", patterns: [/openrouter/i] },
-  { id: "minimax", name: "MiniMax", patterns: [/minimax/i] },
-  { id: "zhipu", name: "智谱 GLM", patterns: [/智谱|\bglm-?[4-9]/i] },
-  { id: "hunyuan", name: "腾讯混元", patterns: [/混元|hunyuan/i] },
-  { id: "doubao", name: "字节豆包", patterns: [/豆包|doubao|字节跳动|bytedance/i] },
-  { id: "mistral", name: "Mistral", patterns: [/mistral/i] },
-  { id: "perplexity", name: "Perplexity", patterns: [/\bPerplexity\b/] },
-  { id: "runway", name: "Runway", patterns: [/\brunway\b/i] },
-  { id: "suno", name: "Suno", patterns: [/\bsuno\b/i] },
-  { id: "midjourney", name: "Midjourney", patterns: [/midjourney/i] },
-  { id: "stability-ai", name: "Stability AI", patterns: [/stability\s?ai/i] },
-  { id: "elevenlabs", name: "ElevenLabs", patterns: [/eleven\s?labs/i] },
-  { id: "vllm", name: "vLLM", patterns: [/\bvllm\b/i] },
-  { id: "ollama", name: "Ollama", patterns: [/\bollama\b/i] },
-  { id: "windsurf", name: "Windsurf", patterns: [/windsurf/i] },
-  { id: "devin", name: "Devin", patterns: [/\bdevin\b/i] },
-  { id: "manus", name: "Manus", patterns: [/\bmanus\b/i] },
-  { id: "apple", name: "Apple AI", patterns: [/\bapple\s?(intelligence|silicon|ai)\b|苹果(智能|\s?AI)/i] },
-  { id: "amazon", name: "Amazon / AWS", patterns: [/amazon|\baws\b|亚马逊/i] },
-  { id: "baidu", name: "百度文心", patterns: [/百度|baidu|文心|\bernie\s?bot\b/i] },
+  { id: "zybank", name: "中原银行", patterns: [/中原银行|zhongyuan\s?bank/i] },
+  { id: "henan-rcb", name: "河南农商银行", patterns: [/农商(?:联合)?银行|农商行|农信|农村信用|农村商业银行/] },
+  { id: "psbc", name: "邮储银行", patterns: [/邮储|邮政储蓄|\bPSBC\b/i] },
+  { id: "chinapost", name: "中国邮政", patterns: [/中国邮政(?!储蓄)|邮政(?:集团|分公司|公司)/] },
+  { id: "chinapost-life", name: "中邮保险", patterns: [/中邮(?:人寿|保险)/] },
+  { id: "nfra", name: "金融监管总局", patterns: [/金融监(?:督)?管(?:理)?总局|金融监管局/] },
 ];
 
-/** 这些域名上的文章，发布方就是对应的公司（托管平台如 GitHub、arXiv 不算）。 */
+/**
+ * 这些域名上的文章，发布方就是对应的机构。
+ * 河南农商银行的官网域名在部署后核对（见 docs/bankhot-sources.md），确认后再加进来。
+ */
 export const PUBLISHER_DOMAINS: ReadonlyArray<{ entityId: string; domains: readonly string[] }> = [
-  { entityId: "openai", domains: ["openai.com"] },
-  { entityId: "anthropic", domains: ["anthropic.com", "claude.com"] },
-  { entityId: "google", domains: ["deepmind.google", "ai.google", "blog.google"] },
-  { entityId: "deepseek", domains: ["deepseek.com"] },
-  { entityId: "xai", domains: ["x.ai"] },
-  { entityId: "meta", domains: ["ai.meta.com"] },
-  { entityId: "microsoft", domains: ["microsoft.com"] },
-  { entityId: "nvidia", domains: ["nvidia.com"] },
-  { entityId: "qwen", domains: ["qwen.ai"] },
-  { entityId: "cursor", domains: ["cursor.com"] },
-  { entityId: "openrouter", domains: ["openrouter.ai"] },
+  { entityId: "zybank", domains: ["zybank.com.cn"] },
+  { entityId: "psbc", domains: ["psbc.com"] },
+  { entityId: "chinapost", domains: ["chinapost.com.cn"] },
+  { entityId: "chinapost-life", domains: ["chinapost-life.com"] },
+  { entityId: "nfra", domains: ["nfra.gov.cn"] },
 ];
 
-/** 原文里的这些写法也算提到了对应公司。 */
-export const IDENTITY_CONTEXT_ALIASES: ReadonlyArray<{ entityId: string; pattern: RegExp }> = [
-  { entityId: "meta", pattern: /@AIatMeta\b/i },
-  { entityId: "zhipu", pattern: /\bZhipu(?:\s+AI\b|['’]s\b)/i },
-];
+/** 原文里的这些写法也算提到了对应机构。 */
+export const IDENTITY_CONTEXT_ALIASES: ReadonlyArray<{ entityId: string; pattern: RegExp }> = [];
